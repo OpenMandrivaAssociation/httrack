@@ -109,10 +109,10 @@ ln -sf %_docdir/%name/html  $RPM_BUILD_ROOT/%_datadir/%name/html
 %_bindir/webhttrack
 %_bindir/proxytrack
 %config (noreplace) /etc/httrack.conf
-%{_mandir}/man1/htsserver.1.bz2
-%{_mandir}/man1/httrack.1.bz2
-%{_mandir}/man1/webhttrack.1.bz2
-%{_mandir}/man1/proxytrack.1.bz2
+%{_mandir}/man1/htsserver.*
+%{_mandir}/man1/httrack.*
+%{_mandir}/man1/webhttrack.*
+%{_mandir}/man1/proxytrack.*
 %_datadir/applications/WebHTTrack-Websites.desktop
 %_datadir/applications/WebHTTrack.desktop
 %_datadir/pixmaps/httrack.xpm
