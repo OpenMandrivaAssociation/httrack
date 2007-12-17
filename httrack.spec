@@ -17,7 +17,6 @@ Group: 		Networking/WWW
 License: 	GPL
 Source: 	%{name}-%{ftp_version}.tar.bz2
 URL: 		http://www.httrack.com
-BuildRoot: 	%_tmppath/%name-buildroot
 BuildRequires: perl, zlib-devel
 
 %description
