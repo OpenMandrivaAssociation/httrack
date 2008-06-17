@@ -93,7 +93,7 @@ EOF
  
 %__chmod 644 $RPM_BUILD_ROOT/etc/httrack.conf
 
-ln -sf %_docdir/%name/html  $RPM_BUILD_ROOT/%_datadir/%name/html 
+rm -fr $RPM_BUILD_ROOT/%_datadir/%name/html 
 
 %clean
 %__rm -rf $RPM_BUILD_ROOT
@@ -107,7 +107,6 @@ ln -sf %_docdir/%name/html  $RPM_BUILD_ROOT/%_datadir/%name/html
 
 %files
 %defattr(-,root,root)
-%{_docdir}/httrack/
 %_bindir/htsserver
 %_bindir/httrack
 %_bindir/webhttrack
