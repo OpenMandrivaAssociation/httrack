@@ -1,7 +1,7 @@
 %define name httrack
 %define version 3.40.3
 %define ftp_version 3.40-2
-%define release %mkrel 2
+%define release %mkrel 3
 
 %define major 1
 %define libname %mklibname %name %major
@@ -93,7 +93,6 @@ EOF
  
 %__chmod 644 $RPM_BUILD_ROOT/etc/httrack.conf
 
-rm -fr $RPM_BUILD_ROOT/%_datadir/%name/html 
 
 %clean
 %__rm -rf $RPM_BUILD_ROOT
@@ -107,6 +106,7 @@ rm -fr $RPM_BUILD_ROOT/%_datadir/%name/html
 
 %files
 %defattr(-,root,root)
+%doc httrack-doc.html templates COPYING INSTALL README *.txt
 %_bindir/htsserver
 %_bindir/httrack
 %_bindir/webhttrack
@@ -127,7 +127,6 @@ rm -fr $RPM_BUILD_ROOT/%_datadir/%name/html
 %_datadir/%name/templates
 %_datadir/%name/lang.indexes
 %defattr(644,root,root,755)
-%doc httrack-doc.html templates COPYING INSTALL README *.txt
 
 %files -n %libname
 %defattr(-, root, root)
