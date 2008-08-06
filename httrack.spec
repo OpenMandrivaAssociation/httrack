@@ -1,24 +1,26 @@
-%define name httrack
-%define version 3.40.3
-%define ftp_version 3.40-2
-%define release %mkrel 3
+%define ftp_version 3.42-3
 
-%define major 1
+%define major 2
 %define libname %mklibname %name %major
-%define libnamedev %mklibname %name %major -d
+%define libnamedev %mklibname %name -d
 
-%define summary A free (libre/open source) and easy-to-use offline browser utility
-
-Summary:	%summary
-Name:		%name
-Version: 	%version
-Release:	%release
+Name:		httrack
+Version: 	3.42.3
+Release:	%mkrel 1
+Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
-License: 	GPL
-Source: 	%{name}-%{ftp_version}.tar.bz2
+License: 	GPLv2+
+Source: 	%{name}-%{ftp_version}.tar.gz
+Patch0:		httrack-3.42-generic-macros.patch
+Patch1:		httrack-3.42-libhtsjava.patch
+Patch2:		httrack-3.42-utf-8.patch
 URL: 		http://www.httrack.com
-BuildRoot: 	%_tmppath/%name-buildroot
-BuildRequires: perl, zlib-devel
+BuildRoot: 	%{_tmppath}/%{name}-buildroot
+BuildRequires: 	perl, zlib-devel
+BuildRequires:	dos2unix
+BuildRequires:	imagemagick
+BuildRequires:	desktop-file-utils
+BuildRequires:	chrpath
 
 %description
 HTTrack is a free (open source) and easy-to-use offline browser utility.
@@ -32,9 +34,9 @@ It can update an existing mirrored site, and resume interrupted downloads.
 It is fully configurable, and has an integrated help system.
 
 %package -n %libname
-Summary:     %summary
+Summary:     	%summary
 Group: 		System/Libraries
-Provides:       libhttrack=%version-%release
+Provides:       libhttrack=%{version}-%{release}
 
 %description -n %libname
 libraries needed for httrack
@@ -42,28 +44,53 @@ libraries needed for httrack
 %package -n %libnamedev 
 Summary:	Headers and static libraries for httrack
 Group:		Development/C++
-Requires:	libhttrack=%version-%release
+Requires:	libhttrack=%{version}-%{release}
 Provides:       libhttrack-devel
+Conflicts:	%mklibname -d httrack 1
+Obsoletes:	%mklibname -d httrack 1
 #Requires: 	libhttrack1 = %version
 
 %description -n %libnamedev
 libraries headers for needed building using httrack
 
 %prep
-%__rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
+%setup -q -n %{name}-%{version}
+%patch0 -p1 -b .generic-macros
+%patch1 -p1 -b .libhtsjava
+%patch2 -p1 -b .utf8
 
-%setup -q -n %name-%version
+# Suppress rpmlint error.
+chmod 644 `find . -name "*.c" -perm /111 -print`
+chmod 644 `find . -name "*.h" -perm /111 -print`
+dos2unix ./AUTHORS
+dos2unix ./README
+dos2unix ./greetings.txt
+dos2unix ./history.txt
+dos2unix ./html/step3.html
+dos2unix ./%{name}-doc.html
+dos2unix ./libtest/*.c
+dos2unix ./libtest/example.h
+dos2unix ./libtest/readme.txt
+dos2unix ./license.txt
+dos2unix ./templates/*.html
+iconv --from-code ISO8859-1 --to-code UTF-8 ./greetings.txt \
+  --output greetings.utf-8 && mv greetings.utf-8 ./greetings.txt
+iconv --from-code ISO8859-1 --to-code UTF-8 ./history.txt \
+  --output history.utf-8 && mv history.utf-8 ./history.txt
+iconv --from-code ISO8859-1 --to-code UTF-8 ./html/contact.html \
+  --output contact.utf-8 && mv contact.utf-8 ./html/contact.html
 
 %build
-
-%configure2_5x
+%configure2_5x --disable-static
 
 %install
 %makeinstall_std
- 
-%__mkdir_p $RPM_BUILD_ROOT/etc
+find %{buildroot} -type f -name "*.la" -delete 
 
-%__cat  >$RPM_BUILD_ROOT/etc/httrack.conf <<"EOF"
+mkdir -p %{buildroot}/etc
+
+cat > %{buildroot}/etc/httrack.conf <<"EOF"
 # HTTrack Website Copier Settings
 # See httrack --help for more information
 
@@ -91,11 +118,49 @@ deny ad.doubleclick.net/*
 set path ~/websites/#
 EOF
  
-%__chmod 644 $RPM_BUILD_ROOT/etc/httrack.conf
+chmod 644 %{buildroot}/etc/httrack.conf
+
+# Move libtest and templates from /usr/share/httrack to RPM_BUILD_DIR.
+# To be later listed against %doc.
+rm -rf ./libtest ./templates
+mv %{buildroot}%{_datadir}/%{name}/libtest .
+mv %{buildroot}%{_datadir}/%{name}/templates .
+
+# We need to have a copy of html in /usr/share/httrack.
+# The other is to be listed against %doc.
+rm -rf ./html
+cp -pr %{buildroot}%{_datadir}/%{name}/html .
+
+# icon
+mkdir -p %{buildroot}%{_iconsdir}/hicolor/{48x48,32x32,16x16}/apps
+convert -scale 48 %{buildroot}%{_datadir}/%{name}/icons/webhttrack.xpm %buildroot%{_iconsdir}/hicolor/48x48/apps/%{name}.png
+convert -scale 32 %{buildroot}%{_datadir}/%{name}/icons/webhttrack.xpm %buildroot%{_iconsdir}/hicolor/32x32/apps/%{name}.png
+convert -scale 16 %{buildroot}%{_datadir}/%{name}/icons/webhttrack.xpm %buildroot%{_iconsdir}/hicolor/16x16/apps/%{name}.png
+
+rm -rf %{buildroot}%{_datadir}/%{name}/icons
+
+desktop-file-install --vendor ""  \
+	--remove-key Encoding \
+	--remove-category="Application" \
+	--remove-key Terminal \
+	--remove-key MultipleArgs \
+	--remove-key Type \
+	--dir %{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/*
+# fix icon and improve names so that menu entries appear next to 
+# each other
+sed -i	-e 's!^Icon=.*$!Icon=httrac!' \
+	-e 's!Browse Mirrored Websites!HTTrack Website Browser!' \
+	-e 's!WebHTTrack Website Copier!HTTrack Website Copier!' \
+	%{buildroot}%{_datadir}/applications/*
+
+# Remove rpaths.
+chrpath --delete %{buildroot}%{_bindir}/htsserver
+chrpath --delete %{buildroot}%{_bindir}/%{name}
+chrpath --delete %{buildroot}%{_libdir}/libhtsjava.so.2.0.42
 
 
 %clean
-%__rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
  
 %if %mdkversion < 200900
 %post -n %libname -p /sbin/ldconfig
@@ -106,43 +171,40 @@ EOF
 
 %files
 %defattr(-,root,root)
-%doc httrack-doc.html templates COPYING INSTALL README *.txt
-%_bindir/htsserver
-%_bindir/httrack
-%_bindir/webhttrack
-%_bindir/proxytrack
+%doc httrack-doc.html templates AUTHORS README license.txt history.txt greetings.txt
+%{_bindir}/htsserver
+%{_bindir}/httrack
+%{_bindir}/webhttrack
+%{_bindir}/proxytrack
 %config (noreplace) /etc/httrack.conf
 %{_mandir}/man1/htsserver.*
 %{_mandir}/man1/httrack.*
 %{_mandir}/man1/webhttrack.*
 %{_mandir}/man1/proxytrack.*
-%_datadir/applications/WebHTTrack-Websites.desktop
-%_datadir/applications/WebHTTrack.desktop
-%_datadir/pixmaps/httrack.xpm
-%dir %_datadir/%name
-%_datadir/%name/*.def
-%_datadir/%name/html
-%_datadir/%name/icons/webhttrack.xpm
-%_datadir/%name/lang
-%_datadir/%name/templates
-%_datadir/%name/lang.indexes
+%{_datadir}/applications/WebHTTrack-Websites.desktop
+%{_datadir}/applications/WebHTTrack.desktop
+%{_datadir}/pixmaps/httrack.xpm
+%dir %{_datadir}/%name
+%{_datadir}/%name/*.def
+%{_datadir}/%name/html
+%{_datadir}/%name/lang
+%{_datadir}/%name/lang.indexes
+%{_iconsdir}/hicolor/*/apps/*
 %defattr(644,root,root,755)
 
 %files -n %libname
 %defattr(-, root, root)
-%{_libdir}/lib%name.so.1
-%{_libdir}/lib%name.so.1.0.40
+%{_libdir}/lib%name.so.%{major}
+%{_libdir}/lib%name.so.2.0.42
+%{_libdir}/libhtsjava.so.%{major}
+%{_libdir}/libhtsjava.so.2.0.42
 %{_libdir}/%{name}/*.so.*
 %{_libdir}/%{name}/*.so
 
 %files -n %libnamedev
 %defattr(-,root,root)  
 %{_libdir}/lib%name.so
-%{_libdir}/lib%name.a
-%{_libdir}/lib%name.la
-%{_libdir}/%{name}/*.a
-%{_libdir}/%{name}/*.la
-%_includedir/%name
-%_datadir/%name/libtest
+%{_libdir}/libhtsjava.so
+%{_includedir}/%name
 
 
