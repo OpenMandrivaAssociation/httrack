@@ -6,7 +6,7 @@
 
 Name:		httrack
 Version: 	3.42.3
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
@@ -139,6 +139,10 @@ convert -scale 16 %{buildroot}%{_datadir}/%{name}/icons/webhttrack.xpm %buildroo
 
 rm -rf %{buildroot}%{_datadir}/%{name}/icons
 
+# This just opens a web browser on ~/websites, which is empty by
+# default, so this is a bit useless
+rm -f %{buildroot}%{_datadir}/applications/WebHTTrack-Websites.desktop
+
 desktop-file-install --vendor ""  \
 	--remove-key Encoding \
 	--remove-category="Application" \
@@ -146,10 +150,9 @@ desktop-file-install --vendor ""  \
 	--remove-key MultipleArgs \
 	--remove-key Type \
 	--dir %{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/*
-# fix icon and improve names so that menu entries appear next to 
-# each other
-sed -i	-e 's!^Icon=.*$!Icon=httrac!' \
-	-e 's!Browse Mirrored Websites!HTTrack Website Browser!' \
+
+# fix icon and shorten name 
+sed -i	-e 's!^Icon=.*$!Icon=httrack!' \
 	-e 's!WebHTTrack Website Copier!HTTrack Website Copier!' \
 	%{buildroot}%{_datadir}/applications/*
 
@@ -181,7 +184,6 @@ rm -rf %{buildroot}
 %{_mandir}/man1/httrack.*
 %{_mandir}/man1/webhttrack.*
 %{_mandir}/man1/proxytrack.*
-%{_datadir}/applications/WebHTTrack-Websites.desktop
 %{_datadir}/applications/WebHTTrack.desktop
 %{_datadir}/pixmaps/httrack.xpm
 %dir %{_datadir}/%name
