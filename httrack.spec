@@ -1,12 +1,12 @@
-%define ftp_version 3.42-3
+%define ftp_version 3.43-2
 
 %define major 2
 %define libname %mklibname %name %major
 %define libnamedev %mklibname %name -d
 
 Name:		httrack
-Version: 	3.42.3
-Release:	%mkrel 2
+Version: 	3.43.2
+Release:	%mkrel 1
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
@@ -14,6 +14,7 @@ Source: 	%{name}-%{ftp_version}.tar.gz
 Patch0:		httrack-3.42-generic-macros.patch
 Patch1:		httrack-3.42-libhtsjava.patch
 Patch2:		httrack-3.42-utf-8.patch
+Patch3:		%{name}-%{version}-openssl.patch
 URL: 		http://www.httrack.com
 BuildRoot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	perl, zlib-devel
@@ -21,6 +22,7 @@ BuildRequires:	dos2unix
 BuildRequires:	imagemagick
 BuildRequires:	desktop-file-utils
 BuildRequires:	chrpath
+Requires:       openssl
 
 %description
 HTTrack is a free (open source) and easy-to-use offline browser utility.
@@ -29,7 +31,7 @@ Builds recursively all directories.
 Getting HTML, images, and other files from the server.
 HTTrack arranges the original site's relative link-structure.
 Simply open a page of the "mirrored" website in your browser.
-You can browse the site from link to link, as if you were viewing it online. 
+You can browse the site from link to link, as if you were viewing it online.
 It can update an existing mirrored site, and resume interrupted downloads.
 It is fully configurable, and has an integrated help system.
 
@@ -41,7 +43,7 @@ Provides:       libhttrack=%{version}-%{release}
 %description -n %libname
 libraries needed for httrack
 
-%package -n %libnamedev 
+%package -n %libnamedev
 Summary:	Headers and static libraries for httrack
 Group:		Development/C++
 Requires:	libhttrack=%{version}-%{release}
@@ -56,24 +58,13 @@ libraries headers for needed building using httrack
 %prep
 rm -rf %{buildroot}
 %setup -q -n %{name}-%{version}
-%patch0 -p1 -b .generic-macros
-%patch1 -p1 -b .libhtsjava
+#%patch0 -p1 -b .generic-macros
+#%patch1 -p1 -b .libhtsjava
 %patch2 -p1 -b .utf8
+%patch3 -p1 -b .openssl
 
 # Suppress rpmlint error.
-chmod 644 `find . -name "*.c" -perm /111 -print`
-chmod 644 `find . -name "*.h" -perm /111 -print`
-dos2unix ./AUTHORS
-dos2unix ./README
-dos2unix ./greetings.txt
-dos2unix ./history.txt
-dos2unix ./html/step3.html
-dos2unix ./%{name}-doc.html
-dos2unix ./libtest/*.c
-dos2unix ./libtest/example.h
-dos2unix ./libtest/readme.txt
-dos2unix ./license.txt
-dos2unix ./templates/*.html
+  --output contact.utf-8 && mv contact.utf-8 ./html/contact.html
 iconv --from-code ISO8859-1 --to-code UTF-8 ./greetings.txt \
   --output greetings.utf-8 && mv greetings.utf-8 ./greetings.txt
 iconv --from-code ISO8859-1 --to-code UTF-8 ./history.txt \
@@ -86,7 +77,7 @@ iconv --from-code ISO8859-1 --to-code UTF-8 ./html/contact.html \
 
 %install
 %makeinstall_std
-find %{buildroot} -type f -name "*.la" -delete 
+find %{buildroot} -type f -name "*.la" -delete
 
 mkdir -p %{buildroot}/etc
 
@@ -117,7 +108,7 @@ deny ad.doubleclick.net/*
 # folder when launching 'httrack www.foo.com'
 set path ~/websites/#
 EOF
- 
+
 chmod 644 %{buildroot}/etc/httrack.conf
 
 # Move libtest and templates from /usr/share/httrack to RPM_BUILD_DIR.
@@ -151,7 +142,7 @@ desktop-file-install --vendor ""  \
 	--remove-key Type \
 	--dir %{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/*
 
-# fix icon and shorten name 
+# fix icon and shorten name
 sed -i	-e 's!^Icon=.*$!Icon=httrack!' \
 	-e 's!WebHTTrack Website Copier!HTTrack Website Copier!' \
 	%{buildroot}%{_datadir}/applications/*
@@ -164,7 +155,7 @@ chrpath --delete %{buildroot}%{_libdir}/libhtsjava.so.2.0.42
 
 %clean
 rm -rf %{buildroot}
- 
+
 %if %mdkversion < 200900
 %post -n %libname -p /sbin/ldconfig
 %endif
@@ -204,7 +195,7 @@ rm -rf %{buildroot}
 %{_libdir}/%{name}/*.so
 
 %files -n %libnamedev
-%defattr(-,root,root)  
+%defattr(-,root,root)
 %{_libdir}/lib%name.so
 %{_libdir}/libhtsjava.so
 %{_includedir}/%name
