@@ -1,3 +1,5 @@
+%define Werror_cflags %nil
+
 %define ftp_version 3.43-2
 
 %define major 2
