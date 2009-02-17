@@ -1,5 +1,3 @@
-%define Werror_cflags %nil
-
 %define ftp_version 3.43-2
 
 %define major 2
@@ -18,6 +16,7 @@ Patch1:		httrack-3.42-libhtsjava.patch
 Patch2:		httrack-3.42-utf-8.patch
 Patch3:		%{name}-%{version}-openssl.patch
 Patch4:		%{name}-%{version}-desktop.patch
+Patch5:		%{name}-3.43.2-string-format.patch
 URL: 		http://www.httrack.com
 BuildRoot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	perl, zlib-devel
@@ -66,6 +65,7 @@ rm -rf %{buildroot}
 %patch2 -p1 -b .utf8
 %patch3 -p1 -b .openssl
 %patch4 -p1 -b .desktop
+%patch5 -p1 -b .strfmt
 
 # Suppress rpmlint error.
   --output contact.utf-8 && mv contact.utf-8 ./html/contact.html
