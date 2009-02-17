@@ -15,7 +15,6 @@ Patch0:		httrack-3.42-generic-macros.patch
 Patch1:		httrack-3.42-libhtsjava.patch
 Patch2:		httrack-3.42-utf-8.patch
 Patch3:		%{name}-%{version}-openssl.patch
-Patch4:		%{name}-%{version}-desktop.patch
 Patch5:		%{name}-3.43.2-string-format.patch
 URL: 		http://www.httrack.com
 BuildRoot: 	%{_tmppath}/%{name}-buildroot
@@ -64,11 +63,22 @@ rm -rf %{buildroot}
 #%patch1 -p1 -b .libhtsjava
 %patch2 -p1 -b .utf8
 %patch3 -p1 -b .openssl
-%patch4 -p1 -b .desktop
 %patch5 -p1 -b .strfmt
 
 # Suppress rpmlint error.
-  --output contact.utf-8 && mv contact.utf-8 ./html/contact.html
+dos2unix ./AUTHORS
+dos2unix ./README
+dos2unix ./greetings.txt
+dos2unix ./history.txt
+dos2unix ./html/step3.html
+dos2unix ./%{name}-doc.html
+dos2unix ./libtest/*.c
+dos2unix ./libtest/example.h
+dos2unix ./libtest/readme.txt
+dos2unix ./license.txt
+dos2unix ./templates/*.html
+
+
 iconv --from-code ISO8859-1 --to-code UTF-8 ./greetings.txt \
   --output greetings.utf-8 && mv greetings.utf-8 ./greetings.txt
 iconv --from-code ISO8859-1 --to-code UTF-8 ./history.txt \
@@ -138,12 +148,11 @@ rm -rf %{buildroot}%{_datadir}/%{name}/icons
 # default, so this is a bit useless
 rm -f %{buildroot}%{_datadir}/applications/WebHTTrack-Websites.desktop
 
-desktop-file-install --delete-original --vendor ""  \
+desktop-file-install --vendor ""  \
 	--remove-key Encoding \
 	--remove-category="Application" \
 	--remove-key Terminal \
 	--remove-key MultipleArgs \
-	--remove-key Type \
 	--dir %{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/*
 
 # fix icon and shorten name
@@ -154,7 +163,7 @@ sed -i	-e 's!^Icon=.*$!Icon=httrack!' \
 # Remove rpaths.
 chrpath --delete %{buildroot}%{_bindir}/htsserver
 chrpath --delete %{buildroot}%{_bindir}/%{name}
-chrpath --delete %{buildroot}%{_libdir}/libhtsjava.so.2.0.42
+chrpath --delete %{buildroot}%{_libdir}/libhtsjava.so.*
 
 
 %clean
@@ -192,9 +201,9 @@ rm -rf %{buildroot}
 %files -n %libname
 %defattr(-, root, root)
 %{_libdir}/lib%name.so.%{major}
-%{_libdir}/lib%name.so.2.0.42
+%{_libdir}/lib%name.so.2.0.43
 %{_libdir}/libhtsjava.so.%{major}
-%{_libdir}/libhtsjava.so.2.0.42
+%{_libdir}/libhtsjava.so.2.0.43
 %{_libdir}/%{name}/*.so.*
 %{_libdir}/%{name}/*.so
 
