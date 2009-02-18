@@ -1,8 +1,6 @@
 %define ftp_version 3.43-2
 
 %define major 2
-%define libname %mklibname %name %major
-%define libnamedev %mklibname %name -d
 
 Name:		httrack
 Version: 	3.43.2
@@ -24,6 +22,11 @@ BuildRequires:	imagemagick
 BuildRequires:	desktop-file-utils
 BuildRequires:	chrpath
 Requires:       openssl
+Conflicts:	%{mklibname httrack 1}
+Obsoletes:	%{mklibname httrack 1} < 3.43.2-1mdv
+Provides:	%{mklibname httrack %{major}} = %{version}-%{release}
+Provides:	%{mklibname httrack} = %{version}-%{release}
+Obsoletes:	%{mklibname httrack} < 3.43.2-1mdv
 
 %description
 HTTrack is a free (open source) and easy-to-use offline browser utility.
@@ -36,25 +39,18 @@ You can browse the site from link to link, as if you were viewing it online.
 It can update an existing mirrored site, and resume interrupted downloads.
 It is fully configurable, and has an integrated help system.
 
-%package -n %libname
-Summary:     	%summary
-Group: 		System/Libraries
-Provides:       libhttrack=%{version}-%{release}
-
-%description -n %libname
-libraries needed for httrack
-
-%package -n %libnamedev
+%package devel
 Summary:	Headers and static libraries for httrack
 Group:		Development/C++
 Requires:	libhttrack=%{version}-%{release}
 Provides:       libhttrack-devel
-Conflicts:	%mklibname -d httrack 1
-Obsoletes:	%mklibname -d httrack 1
-#Requires: 	libhttrack1 = %version
-
-%description -n %libnamedev
+Conflicts:	%{mklibname -d httrack 1}
+Obsoletes:	%{mklibname -d httrack 1} < 3.43.2-1mdv
+Provides:	%{mklibname -d httrack} = %{version}-%{release}
+Obsoletes:	%{mklibname -d httrack} < 3.43.2-1mdv
+%description devel
 libraries headers for needed building using httrack
+
 
 %prep
 rm -rf %{buildroot}
@@ -196,21 +192,15 @@ rm -rf %{buildroot}
 %{_datadir}/%name/lang
 %{_datadir}/%name/lang.indexes
 %{_iconsdir}/hicolor/*/apps/*
-%defattr(644,root,root,755)
-
-%files -n %libname
-%defattr(-, root, root)
 %{_libdir}/lib%name.so.%{major}
 %{_libdir}/lib%name.so.2.0.43
+%{_libdir}/%{name}/*.so
 %{_libdir}/libhtsjava.so.%{major}
 %{_libdir}/libhtsjava.so.2.0.43
 %{_libdir}/%{name}/*.so.*
-%{_libdir}/%{name}/*.so
 
-%files -n %libnamedev
+%files devel
 %defattr(-,root,root)
 %{_libdir}/lib%name.so
 %{_libdir}/libhtsjava.so
 %{_includedir}/%name
-
-
