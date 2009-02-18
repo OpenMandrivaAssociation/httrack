@@ -23,10 +23,10 @@ BuildRequires:	desktop-file-utils
 BuildRequires:	chrpath
 Requires:       openssl
 Conflicts:	%{mklibname httrack 1}
+Obsoletes:      %{mklibname httrack 1} 
 Obsoletes:	%{mklibname httrack 2} < 3.43.2-1mdv
 Provides:	%{mklibname httrack %{major}} = %{version}-%{release}
 Provides:	%{mklibname httrack} = %{version}-%{release}
-Obsoletes:	%{mklibname httrack} < 3.43.2-1mdv
 
 %description
 HTTrack is a free (open source) and easy-to-use offline browser utility.
@@ -45,6 +45,7 @@ Group:		Development/C++
 Requires:	libhttrack=%{version}-%{release}
 Provides:       libhttrack-devel
 Conflicts:	%{mklibname -d httrack 1}
+Obsoletes:	%{mklibname -d httrack 1}
 Provides:	%{mklibname -d httrack} = %{version}-%{release}
 Obsoletes:	%{mklibname -d httrack} < 3.43.2-1mdv
 %description devel
