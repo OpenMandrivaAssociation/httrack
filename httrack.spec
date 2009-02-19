@@ -22,6 +22,7 @@ BuildRequires:	imagemagick
 BuildRequires:	desktop-file-utils
 BuildRequires:	chrpath
 Requires:       openssl
+Provides:	libhttrack = %{version}-%{release}
 Conflicts:	%{mklibname httrack 1}
 Obsoletes:      %{mklibname httrack 1} 
 Obsoletes:	%{mklibname httrack 2} < 3.43.2-1mdv
