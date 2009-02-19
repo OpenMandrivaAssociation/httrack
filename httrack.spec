@@ -9,11 +9,9 @@ Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
 Source: 	%{name}-%{ftp_version}.tar.gz
-Patch0:		httrack-3.42-generic-macros.patch
-Patch1:		httrack-3.42-libhtsjava.patch
-Patch2:		httrack-3.42-utf-8.patch
-Patch3:		%{name}-%{version}-openssl.patch
-Patch5:		%{name}-3.43.2-string-format.patch
+Patch0:		httrack-3.42-utf-8.patch
+Patch1:		%{name}-%{version}-openssl.patch
+Patch2:		%{name}-3.43.2-string-format.patch
 URL: 		http://www.httrack.com
 BuildRoot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	perl, zlib-devel
@@ -57,11 +55,9 @@ libraries headers for needed building using httrack
 %prep
 rm -rf %{buildroot}
 %setup -q -n %{name}-%{version}
-#%patch0 -p1 -b .generic-macros
-#%patch1 -p1 -b .libhtsjava
-%patch2 -p1 -b .utf8
-%patch3 -p1 -b .openssl
-%patch5 -p1 -b .strfmt
+%patch0 -p1 -b .utf8
+%patch1 -p1 -b .openssl
+%patch2 -p1 -b .strfmt
 
 # Suppress rpmlint error.
 dos2unix ./AUTHORS
