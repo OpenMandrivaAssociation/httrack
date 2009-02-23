@@ -4,7 +4,7 @@
 
 Name:		httrack
 Version: 	3.43.2
-Release:	%mkrel 2
+Release:	%mkrel 3
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
@@ -42,7 +42,7 @@ It is fully configurable, and has an integrated help system.
 %package devel
 Summary:	Headers and static libraries for httrack
 Group:		Development/C++
-Requires:	libhttrack=%{version}-%{release}
+Requires:	libhttrack = %{version}-%{release}
 Provides:       libhttrack-devel
 Conflicts:	%{mklibname -d httrack 1}
 Obsoletes:	%{mklibname -d httrack 1}
