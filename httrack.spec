@@ -1,17 +1,17 @@
-%define ftp_version 3.43-2
+%define ftp_version 3.43-3
 
 %define major 2
 
 Name:		httrack
-Version: 	3.43.2
+Version: 	3.43.3
 Release:	%mkrel 3
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
 Source: 	%{name}-%{ftp_version}.tar.gz
 Patch0:		httrack-3.42-utf-8.patch
-Patch1:		%{name}-%{version}-openssl.patch
-Patch2:		%{name}-3.43.2-string-format.patch
+Patch1:		httrack-3.43.2-openssl.patch
+Patch2:		httrack-3.43.2-string-format.patch
 URL: 		http://www.httrack.com
 BuildRoot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	perl, zlib-devel
