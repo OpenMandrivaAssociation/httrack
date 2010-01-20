@@ -1,9 +1,9 @@
-%define ftp_version 3.43-7
+%define ftp_version 3.43-9
 
 %define major 2
 
 Name:		httrack
-Version: 	3.43.7
+Version: 	3.43.9
 Release:	%mkrel 1
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
