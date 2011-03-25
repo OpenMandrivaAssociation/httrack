@@ -1,17 +1,17 @@
-%define ftp_version 3.43-9
+%define ftp_version 3.44.1
 
 %define major 2
 
 Name:		httrack
-Version: 	3.43.9
-Release:	%mkrel 2
+Version: 	3.44.1
+Release:	%mkrel 1
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
 Source: 	%{name}-%{ftp_version}.tar.gz
 Patch0:		httrack-3.42-utf-8.patch
-Patch1:		httrack-3.43.2-openssl.patch
-Patch2:		httrack-3.43.2-string-format.patch
+#Patch1:		httrack-3.43.2-openssl.patch
+Patch1:		httrack-3.43.2-string-format.patch
 URL: 		http://www.httrack.com
 BuildRoot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	perl, zlib-devel
@@ -56,8 +56,8 @@ libraries headers for needed building using httrack
 rm -rf %{buildroot}
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .utf8
-%patch1 -p1 -b .openssl
-%patch2 -p1 -b .strfmt
+#%patch1 -p1 -b .openssl
+%patch1 -p1 -b .strfmt
 
 # Suppress rpmlint error.
 dos2unix ./AUTHORS
@@ -191,10 +191,10 @@ rm -rf %{buildroot}
 %{_datadir}/%name/lang.indexes
 %{_iconsdir}/hicolor/*/apps/*
 %{_libdir}/lib%name.so.%{major}
-%{_libdir}/lib%name.so.2.0.43
+%{_libdir}/lib%name.so.2.0.44
 %{_libdir}/%{name}/*.so
 %{_libdir}/libhtsjava.so.%{major}
-%{_libdir}/libhtsjava.so.2.0.43
+%{_libdir}/libhtsjava.so.2.0.44
 %{_libdir}/%{name}/*.so.*
 
 %files devel
