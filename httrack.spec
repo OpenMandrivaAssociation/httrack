@@ -1,19 +1,16 @@
-%define ftp_version 3.44.1
+%define ftp_version 3.44.5
 
 %define major 2
 
 Name:		httrack
-Version: 	3.44.1
-Release:	%mkrel 1
+Version: 	3.44.5
+Release:	1
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
-Source: 	%{name}-%{ftp_version}.tar.gz
+Source0: 	http://download.httrack.com/%{name}-%{version}.tar.gz
 Patch0:		httrack-3.42-utf-8.patch
-#Patch1:		httrack-3.43.2-openssl.patch
-Patch1:		httrack-3.43.2-string-format.patch
 URL: 		http://www.httrack.com
-BuildRoot: 	%{_tmppath}/%{name}-buildroot
 BuildRequires: 	perl, zlib-devel
 BuildRequires:	dos2unix
 BuildRequires:	imagemagick
@@ -53,11 +50,8 @@ libraries headers for needed building using httrack
 
 
 %prep
-rm -rf %{buildroot}
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .utf8
-#%patch1 -p1 -b .openssl
-%patch1 -p1 -b .strfmt
 
 # Suppress rpmlint error.
 dos2unix ./AUTHORS
@@ -159,19 +153,7 @@ chrpath --delete %{buildroot}%{_bindir}/htsserver
 chrpath --delete %{buildroot}%{_bindir}/%{name}
 chrpath --delete %{buildroot}%{_libdir}/libhtsjava.so.*
 
-
-%clean
-rm -rf %{buildroot}
-
-%if %mdkversion < 200900
-%post -n %libname -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%postun -n %libname -p /sbin/ldconfig
-%endif
-
 %files
-%defattr(-,root,root)
 %doc httrack-doc.html templates AUTHORS README license.txt history.txt greetings.txt
 %{_bindir}/htsserver
 %{_bindir}/httrack
@@ -198,7 +180,6 @@ rm -rf %{buildroot}
 %{_libdir}/%{name}/*.so.*
 
 %files devel
-%defattr(-,root,root)
 %{_libdir}/lib%name.so
 %{_libdir}/libhtsjava.so
 %{_includedir}/%name
