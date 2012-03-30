@@ -1,9 +1,8 @@
-%define ftp_version 3.44.5
-
 %define major 2
+%define libname %mklibname httrack %{major}
 
 Name:		httrack
-Version: 	3.44.5
+Version: 	3.45.3
 Release:	1
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
@@ -18,12 +17,6 @@ BuildRequires:	desktop-file-utils
 BuildRequires:	chrpath
 Requires:       openssl
 Requires:	xdg-utils
-Provides:	libhttrack = %{version}-%{release}
-Conflicts:	%{mklibname httrack 1}
-Obsoletes:      %{mklibname httrack 1} 
-Obsoletes:	%{mklibname httrack 2} < 3.43.2-1mdv
-Provides:	%{mklibname httrack %{major}} = %{version}-%{release}
-Provides:	%{mklibname httrack} = %{version}-%{release}
 
 %description
 HTTrack is a free (open source) and easy-to-use offline browser utility.
@@ -40,20 +33,30 @@ It is fully configurable, and has an integrated help system.
 Summary:	Headers and static libraries for httrack
 Group:		Development/C++
 Requires:	libhttrack = %{version}-%{release}
-Provides:       libhttrack-devel
-Conflicts:	%{mklibname -d httrack 1}
-Obsoletes:	%{mklibname -d httrack 1}
-Provides:	%{mklibname -d httrack} = %{version}-%{release}
-Obsoletes:	%{mklibname -d httrack} < 3.43.2-1mdv
-%description devel
-libraries headers for needed building using httrack
+Provides:       libhttrack-devel = %{EVRD}
+Obsoletes:	%mklibname -d httrack 1
+Provides:	%mklibname -d httrack = %{version}-%{release}
+Obsoletes:	%mklibname -d httrack < 3.43.2-1mdv
 
+%description devel
+Development files for httrack libraries.
+
+%package -n %{libname}
+Summary:	Httrack shared libraries
+Group:		System/Libraries
+Provides:	libhttrack = %{EVRD}
+Conflicts:	%{name} < 3.45.3-1
+
+%description -n %{libname}
+Shared libraries for httrack.
 
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .utf8
 
 # Suppress rpmlint error.
+chmod 644 AUTHORS
+
 dos2unix ./AUTHORS
 dos2unix ./README
 dos2unix ./greetings.txt
@@ -65,7 +68,6 @@ dos2unix ./libtest/example.h
 dos2unix ./libtest/readme.txt
 dos2unix ./license.txt
 dos2unix ./templates/*.html
-
 
 iconv --from-code ISO8859-1 --to-code UTF-8 ./greetings.txt \
   --output greetings.utf-8 && mv greetings.utf-8 ./greetings.txt
@@ -172,14 +174,15 @@ chrpath --delete %{buildroot}%{_libdir}/libhtsjava.so.*
 %{_datadir}/%name/lang
 %{_datadir}/%name/lang.indexes
 %{_iconsdir}/hicolor/*/apps/*
-%{_libdir}/lib%name.so.%{major}
-%{_libdir}/lib%name.so.2.0.44
-%{_libdir}/%{name}/*.so
-%{_libdir}/libhtsjava.so.%{major}
-%{_libdir}/libhtsjava.so.2.0.44
 %{_libdir}/%{name}/*.so.*
 
 %files devel
 %{_libdir}/lib%name.so
 %{_libdir}/libhtsjava.so
+%{_libdir}/%{name}/*.so
 %{_includedir}/%name
+
+%files -n %{libname}
+%{_libdir}/lib%name.so.%{major}*
+%{_libdir}/libhtsjava.so.%{major}*
+
