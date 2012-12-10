@@ -9,7 +9,6 @@ Group: 		Networking/WWW
 License: 	GPLv2+
 Source0: 	http://download.httrack.com/%{name}-%{version}.tar.gz
 Patch0:		httrack-3.42-utf-8.patch
-Patch1:		httrack-3.44.1+zlib-1.2.5.1.patch
 URL: 		http://www.httrack.com
 BuildRequires: 	perl, zlib-devel
 BuildRequires:	dos2unix
@@ -54,7 +53,6 @@ Shared libraries for httrack.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p1 -b .utf8
-%patch1 -p1
 
 # Suppress rpmlint error.
 chmod 644 AUTHORS
@@ -79,7 +77,7 @@ iconv --from-code ISO8859-1 --to-code UTF-8 ./html/contact.html \
   --output contact.utf-8 && mv contact.utf-8 ./html/contact.html
 
 %build
-%configure2_5x --disable-static --with-zlib=%{_libdir}
+%configure2_5x --disable-static
 
 %install
 %makeinstall_std
