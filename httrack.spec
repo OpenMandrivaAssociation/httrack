@@ -55,8 +55,6 @@ Shared libraries for httrack.
 %patch0 -p1 -b .utf8
 
 # Suppress rpmlint error.
-chmod 644 AUTHORS
-
 dos2unix ./AUTHORS
 dos2unix ./README
 dos2unix ./greetings.txt
@@ -68,6 +66,7 @@ dos2unix ./libtest/example.h
 dos2unix ./libtest/readme.txt
 dos2unix ./license.txt
 dos2unix ./templates/*.html
+
 
 iconv --from-code ISO8859-1 --to-code UTF-8 ./greetings.txt \
   --output greetings.utf-8 && mv greetings.utf-8 ./greetings.txt
@@ -126,12 +125,6 @@ mv %{buildroot}%{_datadir}/%{name}/templates .
 rm -rf ./html
 cp -pr %{buildroot}%{_datadir}/%{name}/html .
 
-# icon
-mkdir -p %{buildroot}%{_iconsdir}/hicolor/{48x48,32x32,16x16}/apps
-convert -scale 48 %{buildroot}%{_datadir}/%{name}/icons/webhttrack.xpm %buildroot%{_iconsdir}/hicolor/48x48/apps/%{name}.png
-convert -scale 32 %{buildroot}%{_datadir}/%{name}/icons/webhttrack.xpm %buildroot%{_iconsdir}/hicolor/32x32/apps/%{name}.png
-convert -scale 16 %{buildroot}%{_datadir}/%{name}/icons/webhttrack.xpm %buildroot%{_iconsdir}/hicolor/16x16/apps/%{name}.png
-
 rm -rf %{buildroot}%{_datadir}/%{name}/icons
 
 # This just opens a web browser on ~/websites, which is empty by
@@ -139,16 +132,16 @@ rm -rf %{buildroot}%{_datadir}/%{name}/icons
 rm -f %{buildroot}%{_datadir}/applications/WebHTTrack-Websites.desktop
 
 desktop-file-install --vendor ""  \
-	--remove-key Encoding \
-	--remove-category="Application" \
-	--remove-key Terminal \
-	--remove-key MultipleArgs \
-	--dir %{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/*
+        --remove-key Encoding \
+        --remove-category="Application" \
+        --remove-key Terminal \
+        --remove-key MultipleArgs \
+        --dir %{buildroot}%{_datadir}/applications %{buildroot}%{_datadir}/applications/*
 
 # fix icon and shorten name
-sed -i	-e 's!^Icon=.*$!Icon=httrack!' \
-	-e 's!WebHTTrack Website Copier!HTTrack Website Copier!' \
-	%{buildroot}%{_datadir}/applications/*
+sed -i  -e 's!^Icon=.*$!Icon=httrack!' \
+        -e 's!WebHTTrack Website Copier!HTTrack Website Copier!' \
+        %{buildroot}%{_datadir}/applications/*
 
 # Remove rpaths.
 chrpath --delete %{buildroot}%{_bindir}/htsserver
@@ -173,7 +166,6 @@ chrpath --delete %{buildroot}%{_libdir}/libhtsjava.so.*
 %{_datadir}/%name/html
 %{_datadir}/%name/lang
 %{_datadir}/%name/lang.indexes
-%{_iconsdir}/hicolor/*/apps/*
 %{_libdir}/%{name}/*.so.*
 
 %files devel
