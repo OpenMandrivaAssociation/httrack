@@ -3,7 +3,7 @@
 
 Name:		httrack
 Version: 	3.46.1
-Release:	1
+Release:	2
 Summary:	A free (libre/open source) and easy-to-use offline browser utility
 Group: 		Networking/WWW
 License: 	GPLv2+
