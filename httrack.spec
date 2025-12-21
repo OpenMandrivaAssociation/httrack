@@ -10,6 +10,11 @@ License: 	GPLv2+
 Source0: 	http://download.httrack.com/%{name}-%{version}.tar.gz
 Patch0:		httrack-3.42-utf-8.patch
 URL: 		https://www.httrack.com
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires: 	perl, zlib-devel
 BuildRequires:	dos2unix
 BuildRequires:	imagemagick
